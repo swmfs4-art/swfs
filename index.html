@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>선거 기록 대조 아카이브</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="masthead">
+  <div class="kicker">기록 대조 아카이브</div>
+  <h1 id="site-title"></h1>
+  <p class="sub" id="site-subtitle"></p>
+  <div class="range-bar" id="range-bar"></div>
+</div>
+
+<div class="container">
+  <div class="method-note">
+    <strong>이 아카이브의 원칙:</strong> 왼쪽엔 제기된 주장을, 오른쪽엔 이에 대한 공식 조사·법원·전문가 반응을 배치합니다.
+    결론은 내리지 않으며, 판단은 자료를 확인한 방문자 각자에게 맡깁니다.
+  </div>
+
+  <div id="entries"></div>
+
+  <div class="disclaimer">
+    이 아카이브는 특정 결론을 주장하지 않습니다. 각 항목은 공개된 보도와 공식 기록을 기반으로 하며,<br>
+    판단은 자료를 확인한 방문자 각자에게 맡깁니다.<br>
+    <span style="opacity:0.7">마지막 업데이트: <span id="last-updated"></span></span>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
