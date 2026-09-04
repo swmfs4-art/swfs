@@ -1,0 +1,8 @@
+{
+  "name": "atc-fnb",
+  "version": "6.66.0",
+  "private": true,
+  "description": "ATC-F&B production service",
+  "scripts": {"start": "node bootstrap.js"},
+  "engines": {"node": ">=18"}
+}
