@@ -4,5 +4,6 @@
   "private": true,
   "description": "ATC-F&B production service",
   "scripts": {"start": "node bootstrap.js"},
-  "engines": {"node": ">=18"}
+  "engines": {"node": ">=18"},
+  "buildTime": "2026-09-04T18:24:25.157Z"
 }
