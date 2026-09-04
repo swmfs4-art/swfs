@@ -16,4 +16,5 @@ function restore(prefix,out){
 
 restore('frontend-','index.html');
 restore('server-','server.js');
+// Deploy v6.67 - 2026-09-04T18:29:25.316Z
 require('./server.js');
