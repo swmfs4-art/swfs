@@ -1,9 +1,15 @@
 {
   "name": "atc-fnb",
-  "version": "6.67.0",
+  "version": "7.132.0",
   "private": true,
-  "description": "ATC-F&B production service",
-  "scripts": {"start": "node bootstrap.js"},
-  "engines": {"node": ">=18"},
-  "buildTime": "2026-09-04T18:24:25.157Z"
+  "scripts": {
+    "start": "node bootstrap.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@ohah/hwpjs": "^0.1.0-rc.10",
+    "playwright": "^1.55.0"
+  }
 }
