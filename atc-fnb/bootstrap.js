@@ -38,5 +38,5 @@ function restoreTar(prefix){
 restoreTar('app-');
 restore('frontend-','index.html');
 restore('server-','server.js');
-// Deploy v6.67 - 2026-09-04T18:29:25.316Z
+// Deploy v7.212 - 2026-09-21 recipe flow and admin analytics
 require('./server.js');
