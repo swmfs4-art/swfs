@@ -38,5 +38,5 @@ function restoreTar(prefix){
 restoreTar('app-');
 restore('frontend-','index.html');
 restore('server-','server.js');
-// Deploy v7.213 - 2026-09-21 channel review QA
+// Deploy v7.214 - 2026-09-21 remove fake sample gallery
 require('./server.js');
