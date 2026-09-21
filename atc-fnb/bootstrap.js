@@ -38,5 +38,5 @@ function restoreTar(prefix){
 restoreTar('app-');
 restore('frontend-','index.html');
 restore('server-','server.js');
-// Deploy v7.212 - 2026-09-21 recipe flow and admin analytics
+// Deploy v7.213 - 2026-09-21 channel review QA
 require('./server.js');
