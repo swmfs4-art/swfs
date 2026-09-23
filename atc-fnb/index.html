@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="원가·매입·레시피·재고·정산, 사업의 숫자를 한눈에 관리하는 ATC-F&B.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="ATC-F&B">
+<meta property="og:title" content="ATC-F&B | 원가·매입·재고, 한곳에서 관리하세요.">
+<meta property="og:description" content="매입 내역 정리부터 레시피 원가 계산, 재고·매출 기록까지. 실제 사용 화면을 살펴보세요.">
+<meta property="og:url" content="https://atcfnb.com/">
+<meta property="og:image" content="https://atcfnb.com/assets/atcfnb-share-current.png?v=20260920-1538">
+<meta property="og:image:secure_url" content="https://atcfnb.com/assets/atcfnb-share-current.png?v=20260920-1538">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ATC-F&B. 원가·매입·재고·정산을 한곳에서 연결하는 외식업 운영 관리.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ATC-F&B | 원가·매입·재고, 한곳에서 관리하세요.">
+<meta name="twitter:description" content="매입 내역 정리부터 레시피 원가 계산, 재고·매출 기록까지. 실제 사용 화면을 살펴보세요.">
+<meta name="twitter:image" content="https://atcfnb.com/assets/atcfnb-share-current.png?v=20260920-1538">
+<meta name="twitter:image:alt" content="ATC-F&B. 원가·매입·재고·정산을 한곳에서 연결하는 외식업 운영 관리.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/maru-buri.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap">
+<title>ATC-F&B | 외식업 원가·매입·재고 관리</title>
+<style id="atcAuthCritical">
+  #atcV60Landing{display:none!important}
+  body.atc-auth-pending #atcV60Landing,
+  body.atc-auth-pending .app-topbar,
+  body.atc-auth-pending #sidebar,
+  body.atc-auth-pending main{display:none!important;visibility:hidden!important}
+  body.atc-auth-pending{background:#fff!important;overflow:hidden!important}
+  body.atc-v60-guest #atcV60Landing{display:block!important}
+</style>
+<link rel="stylesheet" href="/assets/css/atc-v7041-style-inline-01.css?v=20260920-gallery">
+
+<!-- v6.22: Excel은 즉시 사용, 기존 OCR 엔진은 보존하되 필요할 때만 지연 로드 -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="/assets/js/atc-v7041-js-bundle-runtime.js?v=7.234"></script>
+<link rel="stylesheet" href="/assets/css/atc-v7016-safety.css?v=7.144">
+<script src="/assets/js/atc-v7041-js-bundle-safety-early.js?v=7.186"></script>
+<link rel="stylesheet" href="/assets/css/atc-v7017-import-qa-style.css?v=7.144">
+<script src="/assets/js/atc-v7041-js-bundle-import-safety.js?v=7.188"></script>
+<link rel="stylesheet" href="/assets/css/atc-v7096-plan-gates.css?v=7.144">
+<link rel="stylesheet" href="/assets/css/atc-v7144-beta-tutorial.css?v=7.144">
+
+<link rel="stylesheet" href="/assets/css/atc-v7012-sales-option-backtrace-style.css?v=7.212">
+<script src="/assets/js/atc-v7012-sales-option-backtrace.js?v=7.234"></script>
+<link rel="stylesheet" href="/assets/css/atc-v7014-trust-status-style.css?v=7.144">
+<script src="/assets/js/atc-v7014-trust-status.js?v=7.144"></script>
+<link rel="stylesheet" href="/assets/css/atc-v7015-recovery-style.css?v=7.144">
+<script src="/assets/js/atc-v7041-js-bundle-early-hooks.js?v=7.144"></script>
+
+
+<link rel="stylesheet" href="/assets/css/atc-v7041-style-bundle-early-ui.css?v=7.144">
+<link rel="stylesheet" href="/assets/css/atc-v7146-channel-settlement.css?v=7.146">
+<link rel="stylesheet" href="/assets/css/atc-v7041-style-bundle-journey.css?v=7.144">
+<link rel="stylesheet" href="/assets/css/atc-v7147-mobile-gate-fix.css?v=7.177">
+<link rel="stylesheet" href="/assets/css/atc-v7150-production-incoming.css?v=7.150">
+<link rel="stylesheet" href="/assets/css/atc-v7153-admin-calendar.css?v=7.212">
+<link rel="stylesheet" href="/assets/css/atc-v7041-style-bundle-transition.css?v=7.145">
+</head>
+<body class="atc-auth-pending">
+
+<div id="atcV60Landing" aria-label="ATC-F&B 비로그인 홈">
+  <nav class="v60-nav">
+    <div class="v60-wrap v60-nav-inner">
+      <button class="v60-brand" id="v60HomeBrand" type="button" aria-label="ATC-F&B 홈으로"><span class="v661-script-logo">ATC F&amp;B</span><small>매장 원가·운영 관리</small></button>
+      <div class="v60-nav-links">
+        <a href="#v60Features">주요 기능</a><a href="#v60Flow">작동 방식</a><a href="#v60Targets">업종별 활용</a><a href="#v60Pricing">요금제</a><a href="#v60Start">서비스 시작</a>
+      </div>
+      <div class="v60-nav-actions">
+        <button class="v60-btn ghost" type="button" data-v60-next="login">로그인</button>
+
+      </div>
+    </div>
+  </nav>
+
+  <section class="v60-hero">
+    <div class="v60-wrap v60-hero-grid">
+      <div>
+        <div class="v60-kicker"><i></i> 매출·매입·재고 연결 관리 도구</div>
+        <h1>매입과 매출 파일을<br><em>안전하게 정리하고,</em><br>재고 흐름까지 연결합니다.</h1>
+        <p>ATC-F&amp;B는 외식업 사장님이 엑셀·POS·배달 데이터를 올렸을 때 실패 행, 중복 품목, 채널별 가격 차이, 옵션/세트 확인, 재고 차감 근거를 한곳에서 보여주는 운영 보조 도구입니다.</p>
+        <div class="v60-hero-actions">
+          <button class="v60-btn primary" type="button" data-v60-next="login">로그인</button>
+          <button class="v60-btn outline" id="v661JourneyStartHero" type="button">서비스 시작하기</button>
+          <button class="v60-btn ghost atc-contact-open" type="button">문의</button>
+
+        </div>
+        <div class="v60-trust"><span>파일 가져오기 전 자동 백업</span><span>채널별 가격·정산 확인</span><span>매출 기반 재고 역추적</span></div>
+      </div>
+      <div class="v60-product" aria-label="ATC-F&B 대시보드 미리보기">
+        <div class="v60-window">
+          <div class="v60-window-top"><i class="v60-dot"></i><i class="v60-dot"></i><i class="v60-dot"></i><span class="v60-window-title">ATC-F&amp;B · 매장 대시보드</span></div>
+          <div class="v60-window-body">
+            <div class="v60-mini-side"><strong>ATC-F&amp;B</strong><div class="v60-mini-link active">⌂ 대시보드</div><div class="v60-mini-link">▣ 원재료 관리</div><div class="v60-mini-link">🛒 매입 관리</div><div class="v60-mini-link">♙ 레시피 관리</div><div class="v60-mini-link">▤ 재고 관리</div><div class="v60-mini-link">⌁ 분석 보고서</div></div>
+            <div class="v60-mini-main"><div class="v60-mini-head"><b>오늘의 운영 현황</b><span class="v60-pill">이번 달</span></div><div class="v60-kpis"><div class="v60-kpi"><small>이번 달 매출</small><b>데이터 연결 후 표시</b><em>실제 계정 기준</em></div><div class="v60-kpi"><small>채널 가격 차이</small><b>검수 후 표시</b><em>확인 필요</em></div><div class="v60-kpi"><small>재고 역추적</small><b>계산 후 표시</b><em>차감 근거</em></div></div><div class="v60-mini-panels"><div class="v60-chart"><div class="v60-panel-title">매출·매입 흐름</div><div class="v60-bars"><i style="height:42%"></i><i style="height:60%"></i><i style="height:36%"></i><i style="height:72%"></i><i style="height:55%"></i><i style="height:84%"></i><i style="height:66%"></i><i style="height:78%"></i></div></div><div class="v60-tasks"><div class="v60-panel-title">오늘 확인할 일</div><p>배달 정산 차이 확인</p><p>옵션/세트 검토</p><p>매출 기반 재고 차감</p><p>최근 매입단가 변동</p></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="v60-section soft" id="v60Features"><div class="v60-wrap"><div class="v60-section-head"><div class="eyebrow">CORE WORKFLOW</div><h2>파일을 안전하게 가져오고, 운영 흐름을 연결합니다.</h2><p>엑셀·CSV 매입 자료와 POS·배달 매출 파일을 검수하고, 원가·정산·재고 판단에 필요한 흐름을 한곳에서 확인합니다.</p></div><div class="v60-features">
+    <article class="v60-feature"><div class="v60-feature-icon">01</div><h3>매입을 정리합니다</h3><p>Excel·CSV, 영수증, 직접 입력으로 들어온 매입을 품목·거래처·단위 기준으로 정리합니다.</p><span class="ready">테스트 가능</span></article>
+    <article class="v60-feature"><div class="v60-feature-icon">02</div><h3>가져오기 전에 검수합니다</h3><p>파일 구조, 실패 후보, 경고 후보, 중복 품목을 먼저 보여줘 잘못된 반영을 줄입니다.</p><span class="ready">테스트 가능</span></article>
+    <article class="v60-feature"><div class="v60-feature-icon">03</div><h3>실수 복구를 준비합니다</h3><p>가져오기·삭제·초기화 같은 위험 작업 전 복구 지점을 남기고, 최근 작업을 되돌릴 수 있게 합니다.</p><span class="ready">테스트 가능</span></article>
+    <article class="v60-feature"><div class="v60-feature-icon">04</div><h3>원가 흐름을 연결합니다</h3><p>매입 단가와 레시피를 연결해 메뉴 원가와 매출 기반 재고 차감 기준을 만듭니다.</p><span class="ready">테스트 가능</span></article>
+    <article class="v60-feature"><div class="v60-feature-icon">05</div><h3>매출 파일을 분석합니다</h3><p>POS·배달 주문 파일에서 메뉴, 옵션, 채널, 취소·할인 정보를 분리해 검토합니다.</p><span class="ready">테스트 가능</span></article>
+    <article class="v60-feature"><div class="v60-feature-icon">06</div><h3>정산과 손익을 비교합니다</h3><p>배달 수수료, 쿠폰, 광고비, 입금 차이를 채널별 매출 흐름과 함께 확인합니다.</p><span class="ready">테스트 가능</span></article>
+  </div></div></section>
+
+  <section class="v60-section" id="v60Flow"><div class="v60-wrap"><div class="v60-section-head"><div class="eyebrow">HOW IT WORKS</div><h2>데이터가 쌓일수록 운영 판단이 쉬워지도록</h2><p>ATC-F&amp;B는 자동 실행보다 정확한 분석과 추천을 제공하고, 최종 결정은 사장님이 하도록 설계합니다.</p></div><div class="v60-flow"><div class="v60-flow-item"><div class="v60-flow-num">01 · 매입</div><h3>구매 데이터를 넣고</h3><p>직접 입력하거나 파일·영수증에서 매입 정보를 불러옵니다.</p></div><div class="v60-flow-item"><div class="v60-flow-num">02 · 원가</div><h3>단가를 자동 반영하고</h3><p>원재료와 레시피를 연결해 메뉴 원가를 다시 계산합니다.</p></div><div class="v60-flow-item"><div class="v60-flow-num">03 · 운영</div><h3>판매·재고와 연결하고</h3><p>판매량과 생산량을 기준으로 소모와 부족 가능성을 확인합니다.</p></div><div class="v60-flow-item"><div class="v60-flow-num">04 · 판단</div><h3>사장님이 결정합니다</h3><p>시스템은 분석과 추천을 제공하고 최종 운영 판단은 사용자가 합니다.</p></div></div></div></section>
+
+  <section class="v60-section soft" id="v60Targets"><div class="v60-wrap"><div class="v60-section-head"><div class="eyebrow">FOR YOUR BUSINESS</div><h2>복잡한 ERP 대신, 현장에서 자주 쓰는 것부터</h2><p>카페·음식점·베이커리·로스터리·식품 판매처럼 원가와 재고가 중요한 소규모 사업장을 우선합니다.</p></div><div class="v60-targets">
+<div class="v60-target"><span>☕</span><b>카페 · 디저트</b><p>음료와 베이커리의 레시피 원가, 원재료 매입과 재고를 함께 관리.</p></div>
+<div class="v60-target"><span>🍴</span><b>음식점 · 일반식당</b><p>식재료 단가 변동과 메뉴별 원가율을 빠르게 비교.</p></div>
+<div class="v60-target"><span>🥐</span><b>베이커리 · 로스터리</b><p>생산 레시피와 반제품 원가까지 연결할 수 있는 구조.</p></div>
+<div class="v60-target"><span>📦</span><b>식품 · 온라인 판매</b><p>매입 품목과 완제품 원가, 판매 데이터를 한곳에 정리.</p></div>
+</div></div></section>
+
+
+  <section class="v60-section v605-pricing" id="v60Pricing">
+    <div class="v60-wrap">
+      <div class="v60-section-head">
+        <div class="eyebrow">PRICING</div>
+        <h2>매장 상황에 맞게 기능 범위를 나눕니다.</h2>
+        <p>현재는 안내받은 테스트 사업자/브랜드 중심으로 운영하며, 관리자가 운영 상태에 맞는 플랜을 배정합니다. 결제 화면 없이 기능 범위만 먼저 확인합니다.</p>
+      </div>
+      <div class="v605-pricing-grid">
+        <article class="v605-plan">
+          <div class="v605-plan-name">Basic</div>
+          <div class="v605-plan-price">기본 정리</div>
+          <p class="v605-plan-desc">매입·레시피·매출 입력을 시작하고, 데이터가 쌓이는 구조를 확인합니다.</p>
+          <ul class="v605-plan-list">
+            <li>매입·원재료·레시피 기본 관리</li>
+            <li>수기 매출과 파일 가져오기</li>
+            <li>가져오기 검수와 복구함</li>
+            <li>AI 분석은 미리보기 수준으로 제한</li>
+          </ul>
+        </article>
+        <article class="v605-plan featured">
+          <span class="v605-plan-badge">추천</span>
+          <div class="v605-plan-name">Standard</div>
+          <div class="v605-plan-price">운영 분석</div>
+          <p class="v605-plan-desc">매출, 옵션, 채널 가격, 재고 흐름을 연결해 매일 볼 일을 줄입니다.</p>
+          <ul class="v605-plan-list">
+            <li>채널별 가격·옵션/세트 분석</li>
+            <li>현재 재고와 발주 체크</li>
+            <li>매출 기반 재고 역추적</li>
+            <li>화면별 AI 운영 분석</li>
+          </ul>
+        </article>
+        <article class="v605-plan">
+          <div class="v605-plan-name">Premium</div>
+          <div class="v605-plan-price">고급 점검</div>
+          <p class="v605-plan-desc">돈샘 후보와 반복 이슈를 더 깊게 모아, 우선순위 중심으로 점검합니다.</p>
+          <ul class="v605-plan-list">
+            <li>돈샘 확인과 영향 금액 정렬</li>
+            <li>대용량 매출 안정성 점검 범위</li>
+            <li>관리자 개선 신호함</li>
+            <li>고급 AI 우선순위 제안</li>
+          </ul>
+        </article>
+      </div>
+      <div class="v605-plan-note">※ 현재는 테스트 운영 기준입니다. 플랜은 결제가 아니라 기능 접근 범위이며, 필요 시 관리자 안내 후 조정합니다.</div>
+    </div>
+  </section>
+
+  <section class="v60-cta" id="v60Start"><div class="v60-wrap"><div class="v60-cta-box"><div><div class="v661-cta-logo">ATC F&amp;B</div><h2>바로 시작할 수 있습니다.</h2><p>사업/브랜드 정보를 입력하고 매입·매출·재고 관리를 바로 시작합니다.</p></div><button class="v60-btn primary" id="v661JourneyStart" type="button">서비스 시작하기 →</button></div></div></section>
+  <footer class="v60-footer"><div class="v60-wrap v60-footer-inner"><b>ATC-F&amp;B</b><span>원가 · 매입 · 레시피 · 재고 · 발주 · 경영분석</span><span>© 2026 ATC-F&amp;B</span></div></footer>
+
+
+  <div class="v60-auth-overlay" id="v60AuthOverlay" aria-hidden="true">
+    <div class="v60-auth-card" role="dialog" aria-modal="true" aria-labelledby="v60AuthTitle">
+      <div class="v60-auth-head"><div><h2 id="v60AuthTitle">로그인</h2><p id="v60AuthSubtitle">등록한 계정으로 매장 관리 화면에 접속합니다.</p></div><button class="v60-auth-close" id="v60AuthClose" type="button" aria-label="닫기" data-atc-safe-skip="1">×</button></div>
+      <div class="v60-auth-error" id="v60AuthError"></div>
+      <form id="v60LoginForm" autocomplete="on">
+        <div class="v60-auth-field"><label for="v60LoginId">아이디</label><input id="v60LoginId" type="text" autocomplete="username" placeholder="아이디를 입력하세요" required></div>
+        <div class="v60-auth-field"><label for="v60LoginPassword">비밀번호</label><input id="v60LoginPassword" type="password" autocomplete="current-password" placeholder="비밀번호를 입력하세요" required></div>
+        <label class="v60-auth-check"><input id="v60Remember" type="checkbox" checked> 로그인 상태 유지</label>
+        <button class="v60-auth-submit" type="submit">로그인</button>
+        <div class="v60-auth-switch"><button type="button" id="v60OpenRecovery">아이디/비밀번호 찾기</button></div>
+        <div class="v60-auth-switch">처음 이용하시나요? <button type="button" id="v661FromLoginStart">아래에서 시작하기</button></div><div class="v60-auth-help">기존 사용자는 지금처럼 아이디와 비밀번호로 바로 접속할 수 있습니다.</div>
+      </form>
+      <form id="v60SignupForm" style="display:none" autocomplete="on">
+        <div class="v60-auth-field"><label for="v60SignupEmail">이메일</label><input id="v60SignupEmail" type="email" autocomplete="email" placeholder="name@example.com" required></div>
+        <div class="v60-auth-grid"><div class="v60-auth-field"><label for="v60SignupPassword">비밀번호</label><input id="v60SignupPassword" type="password" autocomplete="new-password" minlength="8" pattern="\S{8,}" placeholder="공백 없이 8자리 이상" required></div><div class="v60-auth-field"><label for="v60SignupPassword2">비밀번호 확인</label><input id="v60SignupPassword2" type="password" autocomplete="new-password" minlength="8" pattern="\S{8,}" placeholder="공백 없이 8자리 이상" required></div></div>
+        <div class="v60-auth-field"><label for="v60SignupStore">사업명/브랜드명</label><input id="v60SignupStore" type="text" placeholder="예: ATC 카페, ATC 디저트" required></div>
+        <div class="v60-auth-grid"><div class="v60-auth-field"><label for="v60SignupType">업종</label><select id="v60SignupType"><option value="카페">카페</option><option value="음식점">음식점</option><option value="베이커리">베이커리</option><option value="로스터리">로스터리</option><option value="식품판매">식품 판매</option><option value="기타">기타</option></select></div><div class="v60-auth-field"><label for="v60SignupBiz">사업자등록번호 (선택)</label><input id="v60SignupBiz" type="text" inputmode="numeric" placeholder="선택 입력"></div></div>
+        <button class="v60-auth-submit" type="submit">회원가입하고 시작하기</button>
+        <div class="v60-auth-switch">이미 계정이 있으신가요? <button type="button" data-auth-switch="login">로그인</button></div>
+        <div class="v60-auth-help">초기 테스트 계정은 입장 절차를 마친 뒤 만들 수 있습니다.</div>
+      </form>
+    </div>
+  </div>
+
+  <div id="v60SessionExpiredOverlay" aria-hidden="true" style="display:none;position:fixed;inset:0;z-index:10050;align-items:center;justify-content:center;background:rgba(15,23,42,.28);padding:16px;">
+    <div role="dialog" aria-modal="true" aria-labelledby="v60SessionExpiredTitle" style="width:min(360px,calc(100vw - 32px));border:1px solid #e5e7eb;border-radius:14px;background:#fff;padding:22px;box-shadow:0 18px 55px rgba(15,23,42,.22);text-align:center;">
+      <h2 id="v60SessionExpiredTitle" style="margin:0 0 10px;font-size:18px;color:#111827;">로그인 세션 만료</h2>
+      <p style="margin:0 0 18px;color:#4b5563;font-size:14px;line-height:1.55;">업데이트로 인하여 로그인 세션이 만료되었습니다.</p>
+      <button id="v60SessionExpiredLogin" type="button" style="width:100%;border:0;border-radius:9px;padding:11px 14px;background:#111827;color:#fff;font-weight:700;cursor:pointer;">다시 로그인하기</button>
+    </div>
+  </div>
+
+  <div class="v60-auth-overlay" id="v60RecoveryOverlay" aria-hidden="true" style="display:none;">
+    <div class="v60-auth-card" role="dialog" aria-modal="true" aria-labelledby="v60RecoveryTitle">
+      <div class="v60-auth-head"><div><h2 id="v60RecoveryTitle">아이디/비밀번호 찾기</h2><p>가입 때 저장한 본인 확인 질문으로 계정을 확인합니다.</p></div><button class="v60-auth-close" id="v60RecoveryClose" type="button" aria-label="닫기" data-atc-safe-skip="1">×</button></div>
+      <div class="v60-auth-error" id="v60RecoveryError"></div>
+      <form id="v60RecoveryLookupForm" autocomplete="off">
+        <div class="v60-auth-field"><label for="v60RecoveryQuery">아이디 또는 사업명/브랜드명</label><input id="v60RecoveryQuery" type="text" placeholder="아이디 또는 정확한 사업명/브랜드명" required></div>
+        <button class="v60-auth-submit" type="submit">본인 확인 질문 보기</button>
+      </form>
+      <form id="v60RecoveryVerifyForm" style="display:none" autocomplete="off">
+        <div class="v60-auth-help" id="v60RecoveryQuestion" style="margin-bottom:10px;"></div>
+        <div class="v60-auth-field"><label for="v60RecoveryAnswer">답변</label><input id="v60RecoveryAnswer" type="text" placeholder="가입 때 입력한 답변" required></div>
+        <div class="v60-auth-grid"><button class="v60-auth-submit" type="button" id="v60FindIdBtn" data-atc-safe-skip="1">아이디 찾기</button><button class="v60-auth-submit" type="button" id="v60ResetPasswordBtn" data-atc-safe-skip="1">비밀번호 a1234567로 초기화</button></div>
+        <button class="v60-btn ghost" type="button" id="v60RecoveryBack" data-atc-safe-skip="1" style="margin-top:10px;width:100%;">다른 계정 찾기</button>
+      </form>
+      <div class="v60-auth-help" id="v60RecoveryResult" style="margin-top:12px;"></div>
+    </div>
+  </div>
+
+  <div class="v661-journey" id="v661Journey" aria-hidden="true">
+    <div class="v661-journey-shell">
+      <button class="v661-journey-close" id="v661JourneyClose" type="button" aria-label="닫기">×</button>
+      <button class="v662-back" id="v662Back" type="button" aria-label="이전 단계">← 이전</button>
+      <div class="v662-transition" id="v662Transition" aria-hidden="true"><span>ATC F&amp;B</span></div>
+      <div class="v661-progress" id="v661Progress"><i></i><i></i><i></i><i></i></div>
+
+      <section class="v661-step" data-step="gate" hidden aria-hidden="true"></section>
+
+      <section class="v661-step v661-intro v665-intro" data-step="intro">
+        <div class="v661-script-mark large">ATC F&amp;B</div>
+        <div class="v665-intro-scenes" id="v665IntroScenes">
+          <div class="v665-intro-scene active"><h2>모든 사업에는 시간이 쌓이고,<br>그 시간은 기억이 됩니다.</h2><p>오프라인 매장, 온라인 브랜드, 납품 사업 모두 괜찮습니다.</p></div>
+          <div class="v665-intro-scene"><h2>사업을 운영할수록<br>기록은 계속 늘어납니다.</h2><p>매입한 재료, 바뀌어온 가격, 쌓여가는 레시피와 판매 기록.<br>중요한 정보는 많아지지만 하나하나 기억하고 연결하기는 어렵습니다.</p></div>
+          <div class="v665-intro-scene"><h2>ATC-F&amp;B는 그 기록을 모아<br>운영에 필요한 정보로 연결합니다.</h2><p>무엇을 얼마에 샀는지, 어떤 재료가 어떤 상품·메뉴에 쓰이는지,<br>가격이 얼마나 변했고 지금 상품의 실제 원가는 얼마인지.</p></div>
+          <div class="v665-intro-scene"><h2>기록이 쌓일수록<br>당신의 사업을 더 잘 기억합니다.</h2><p>반복되는 품목과 거래처를 기억하고 다음 매입을 더 빠르게 정리합니다.<br>단순히 기록을 보관하는 것이 아니라, 앞으로의 운영 판단에 사용할 수 있도록.</p></div>
+          <div class="v665-intro-scene"><h2>ATC-F&amp;B는<br>당신의 사업과 함께 기억을 쌓아갑니다.</h2><p>이제 당신의 사업이 지나온 시간에서 시작해볼게요.</p></div>
+          <button class="v668-intro-tap v668-intro-tap-prev" type="button" aria-label="이전 소개"></button>
+          <button class="v668-intro-tap v668-intro-tap-next" type="button" aria-label="다음 소개"></button>
+        </div>
+        <div class="v665-intro-dots" id="v665IntroDots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+        <button class="v661-gold-btn v665-intro-continue" type="button" data-v661-next="stage">계속하기 →</button>
+        <button class="v668-intro-skip" type="button" data-v661-next="stage">스킵</button>
+      </section>
+
+      <section class="v661-step v665-stage" data-step="stage">
+        <div class="v665-stage-aura" aria-hidden="true"></div>
+        <div class="v661-eyebrow">YOUR JOURNEY</div>
+        <h2>당신의 사업은<br>어디에서 이야기를 이어갈까요?</h2>
+        <p>오프라인 매장이 없어도 괜찮습니다. 온라인 판매, 납품, 제조·공방 운영까지 가장 가까운 시작을 골라주세요.</p>
+        <div class="v661-choice-grid two v665-stage-choices">
+          <button class="v661-choice" type="button" data-business-stage="new"><span>🌱</span><b>처음 시작하는 사업</b><small>오늘의 첫 기록부터 함께 쌓아갑니다.</small></button>
+          <button class="v661-choice" type="button" data-business-stage="existing"><span>🌳</span><b>이미 운영 중인 사업</b><small>지나온 기록을 가져와 지금부터 이어갑니다.</small></button>
+        </div>
+      </section>
+
+      <section class="v661-step" data-step="store">
+        <div class="v661-eyebrow">01 · BRAND</div>
+        <h2>먼저, 사업명 또는 브랜드명을 알려주세요.</h2>
+        <p>오프라인 매장이 없어도 괜찮습니다. 스마트스토어, 납품, 제조/온라인 판매 브랜드명으로 입력해도 됩니다.</p>
+        <p class="v693-note">입력한 이름은 로그인 후 왼쪽 상단에 표시됩니다. 주변 행사·날씨 같은 AI 참고 기능은 시·군·구·동 정도의 축약 위치만 사용하며, 상세 주소가 필요할 때는 먼저 동의를 받습니다.</p>
+        <input class="v661-big-input" id="v661StoreName" type="text" maxlength="40" placeholder="예: ATC 카페, ATC 디저트" autocomplete="organization">
+        <button class="v661-gold-btn" type="button" data-v661-next="industry">다음 →</button>
+      </section>
+
+      <section class="v661-step" data-step="industry">
+        <div class="v661-eyebrow">02 · BUSINESS</div>
+        <h2>사업 유형을 선택해주세요.</h2>
+        <p>오프라인 매장뿐 아니라 온라인 판매, 납품, 제조 중심 운영도 포함해서 가장 가까운 유형을 골라주세요.</p>
+        <div class="v661-choice-grid industries" id="v661Industries">
+          <button class="v661-choice" type="button" data-industry="카페"><span>☕</span><b>카페</b></button>
+          <button class="v661-choice" type="button" data-industry="베이커리"><span>🥐</span><b>베이커리</b></button>
+          <button class="v661-choice" type="button" data-industry="음식점"><span>🍽️</span><b>음식점</b></button>
+          <button class="v661-choice" type="button" data-industry="식품제조·판매"><span>🥡</span><b>식품제조·판매</b></button>
+          <button class="v661-choice" type="button" data-industry="주점"><span>🍺</span><b>주점</b></button>
+          <button class="v661-choice" type="button" data-industry="기타"><span>✨</span><b>기타</b></button>
+        </div>
+      </section>
+
+      <section class="v661-step" data-step="detail">
+        <div class="v661-eyebrow">03 · STYLE</div>
+        <h2>조금 더 알려주세요.</h2>
+        <p id="v661DetailLead">사업에 가까운 스타일을 선택해주세요.</p>
+        <div class="v661-choice-grid details" id="v661Details"></div>
+      </section>
+
+      <section class="v661-step" data-step="operations">
+        <div class="v661-eyebrow">04 · OPERATION</div>
+        <h2>어떤 방식으로 판매/운영하나요?</h2>
+        <p>여러 개를 선택해도 됩니다. 오프라인 판매, 스마트스토어, 택배, 납품/B2B, 직접 생산을 함께 고를 수 있습니다.</p>
+        <div class="v661-multi-grid" id="v661Operations">
+          <button type="button" data-op="매장 판매">매장 판매</button><button type="button" data-op="포장 판매">포장 판매</button>
+          <button type="button" data-op="배달 판매">배달 판매</button><button type="button" data-op="스마트스토어 판매">스마트스토어 판매</button>
+          <button type="button" data-op="자사몰/온라인몰 판매">자사몰/온라인몰 판매</button><button type="button" data-op="택배 발송">택배 발송</button>
+          <button type="button" data-op="납품/B2B">납품/B2B</button><button type="button" data-op="직접 생산">직접 생산</button>
+          <button type="button" data-op="완제품 판매">완제품 판매</button><button type="button" data-op="음료 제조">음료 제조</button>
+          <button type="button" data-op="음식 조리">음식 조리</button>
+        </div>
+        <button class="v661-gold-btn" type="button" data-v661-next="account">이대로 계속하기 →</button>
+      </section>
+
+      <section class="v661-step" data-step="account">
+        <div class="v661-eyebrow">SAVE YOUR BRAND</div>
+        <h2>좋아요. 이제 만든 사업/브랜드를 저장해둘게요.</h2>
+        <p>다음에 다시 와도 지금부터 이어서 시작할 수 있도록 아이디와 비밀번호를 만들어주세요.</p>
+        <p class="v693-note">사업명/브랜드명, 업종, 선택한 운영 항목이 계정에 저장됩니다. 주변 행사·날씨 같은 AI 참고 기능에서는 동 단위 위치만 기본으로 사용하며, 상세 위치가 필요할 때는 먼저 동의를 받습니다.</p>
+        <div class="v661-account-grid"><label>아이디<input id="v661SignupId" type="text" maxlength="32" placeholder="사용할 아이디" autocomplete="username"></label><label>비밀번호<input id="v661SignupPassword" type="password" minlength="8" maxlength="128" pattern="\S{8,}" placeholder="8자리 이상" autocomplete="new-password"></label></div>
+        <div class="v661-account-grid"><label>본인 확인 질문<input id="v661RecoveryQuestion" type="text" maxlength="120" placeholder="예: 우리 브랜드 대표 상품은?"></label><label>답변<input id="v661RecoveryAnswer" type="text" maxlength="80" placeholder="나중에 찾을 때 입력할 답변"></label></div>
+        <p class="v693-note">비밀번호를 잊었을 때 이 질문의 답변이 맞으면 아이디를 확인하거나 비밀번호를 a1234567로 초기화할 수 있습니다.</p>
+        <button class="v661-gold-btn" type="button" id="v661CreateAccount">내 사업 저장하기 →</button>
+        <div class="v661-inline-error" id="v661SignupError"></div>
+      </section>
+
+      <section class="v661-step v665-history-import" data-step="history-import">
+        <div class="v661-eyebrow">BRING YOUR MEMORY</div>
+        <h2>지나온 매입 기록을<br>여기에 그대로 놓아주세요.</h2>
+        <p>3개월 단위, 6개월 단위, 연도별 파일, 하나의 누적 장부 모두 괜찮습니다.<br>파일이 여러 개라면 한 번에 선택하거나 아래 영역에 끌어다 놓으세요.</p>
+        <label class="v665-dropzone" id="v665HistoryDrop">
+          <input id="v665HistoryFiles" type="file" accept=".xlsx,.xls,.csv" multiple>
+          <span class="v665-drop-icon">＋</span><b>Excel / CSV 매입 기록 가져오기</b>
+          <small>여러 파일 동시 선택 가능 · 날짜를 읽어 하나의 과거 기록으로 정리합니다.</small>
+        </label>
+        <div class="v665-file-list" id="v665HistoryFileList"></div>
+        <div class="v661-inline-error" id="v665HistoryError"></div>
+        <button class="v661-gold-btn v665-history-start" type="button" id="v665HistoryStart" disabled>선택한 기록 분석하기 →</button>
+        <button class="v665-skip-history" type="button" id="v665HistorySkip">파일 없이 먼저 시작하기</button>
+      </section>
+
+      <section class="v661-step v662-rooting" data-step="done">
+        <div class="v662-tree-wrap" id="v662TreeWrap" aria-hidden="true">
+          <img class="v682-new-growth" data-src="/assets/tree-growth-animation-once.gif?v=7.144" alt="">
+          <div class="v662-glow"></div>
+          <div class="v662-soil"></div>
+          <div class="v662-tree">
+            <i class="v662-trunk"></i><i class="v662-branch b1"></i><i class="v662-branch b2"></i>
+            <i class="v662-leaf l1"></i><i class="v662-leaf l2"></i><i class="v662-leaf l3"></i><i class="v662-leaf l4"></i><i class="v662-leaf l5"></i><i class="v662-leaf l6"></i>
+            <i class="v662-sprout s1"></i><i class="v662-sprout s2"></i>
+          </div>
+        </div>
+        <div class="v661-eyebrow" id="v662DoneEyebrow">ROOTING MEMORY</div>
+        <h2 id="v661DoneTitle">당신의 기억을 심고 있습니다.</h2>
+        <p id="v661DoneText">지금까지의 기록을 하나씩 연결하고 있습니다.</p>
+        <div class="v662-memory-line" id="v662MemoryLine">기억이 정확하지 않은 부분은 언제든 바로잡아 주세요.</div>
+        <div class="v662-load"><div class="v662-load-track"><i id="v662LoadBar"></i></div><b id="v662LoadPct">0%</b></div>
+        <div class="v661-profile-summary" id="v661ProfileSummary"></div>
+        <button class="v661-gold-btn v662-enter-ready" type="button" id="v661EnterAfterSignup">매장으로 들어가기 →</button>
+        <div class="v681-complete-screen" id="v681JourneyComplete" aria-hidden="true"><div class="v683-complete-art"><img src="/assets/tree-complete-screen-cropped.png?v=7.144" alt="ATC-F&B 당신의 성장을 함께합니다"></div><button class="v681-complete-action" type="button" id="v681JourneyContinue">매장으로 들어가기 →</button></div>
+      </section>
+    </div>
+  </div>
+  <div class="v60-note" id="v60Note"></div>
+</div>
+
+
+  <div class="v609-password-overlay" id="v609PasswordOverlay" aria-hidden="true">
+    <div class="v609-password-dialog" role="dialog" aria-modal="true" aria-labelledby="v609PasswordTitle">
+      <div class="v609-password-head">
+        <div>
+          <h3 id="v609PasswordTitle">비밀번호 변경</h3>
+          <p>현재 비밀번호를 확인한 뒤 새 비밀번호로 변경합니다.</p>
+        </div>
+        <button type="button" class="v609-password-close" id="v609PasswordClose" aria-label="닫기">×</button>
+      </div>
+      <form id="v609PasswordForm" class="v609-password-body">
+        <div class="v609-password-field">
+          <label for="v609CurrentPassword">현재 비밀번호</label>
+          <input id="v609CurrentPassword" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="v609-password-field">
+          <label for="v609NewPassword">새 비밀번호</label>
+          <input id="v609NewPassword" type="password" autocomplete="new-password" minlength="8" pattern="\S{8,}" required>
+        </div>
+        <div class="v609-password-field">
+          <label for="v609NewPasswordConfirm">새 비밀번호 확인</label>
+          <input id="v609NewPasswordConfirm" type="password" autocomplete="new-password" minlength="8" pattern="\S{8,}" required>
+        </div>
+        <div class="v609-password-hint">공백 없이 8자리 이상 입력하세요. 기존 비밀번호와 다른 비밀번호를 사용해야 합니다.</div>
+        <div class="v609-password-error" id="v609PasswordError"></div>
+        <div class="v609-password-actions">
+          <button type="button" class="v609-password-cancel" id="v609PasswordCancel">취소</button>
+          <button type="submit" class="v609-password-save">변경하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+<header class="app-topbar">
+  <div class="topbar-left">
+    <div class="brand-logo" aria-label="ATC-F&B">ATC-<span>F&amp;B</span></div>
+    <button class="icon-button hamburger" type="button" id="atcSidebarToggle" aria-label="사이드바 접기">☰</button>
+    <span class="version-pill">v7.144</span>
+    <span class="today-pill" id="atcTodayPill" aria-label="오늘 날짜와 시간">오늘 --.-- --:--</span>
+  </div>
+  <div class="global-search-wrap">
+    <span class="global-search-icon">⌕</span>
+    <input id="atcGlobalSearch" type="search" placeholder="메뉴 검색 (Ctrl + K)" autocomplete="off" />
+  </div>
+  <div class="topbar-actions">
+    <button class="top-action notify" type="button" aria-label="알림">♧<span class="notify-dot" style="display:none"></span></button>
+    <div class="account-chip"><span class="avatar">●</span><span id="atcLoggedStoreName">ATC-F&B</span><button id="atcPasswordBtn" type="button" class="v609-account-btn">비밀번호 변경</button><button id="atcLogoutBtn" type="button" class="v609-account-btn">로그아웃</button></div>
+  </div>
+</header>
+
+<aside class="sidebar" id="sidebar">
+  <nav class="sidebar-nav">
+    <div class="menu-item menu-dashboard side-link" data-tab="dashboard"><span class="side-icon">⌂</span><span>오늘의 요약</span></div>
+
+    <div class="side-section-title">1. 매입 · 품목</div>
+    <div class="menu-item menu-purchases side-link" data-tab="purchases"><span class="side-icon">🛒</span><span>매입 관리</span></div>
+    <div class="submenu-item side-link" data-tab="ingredients"><span class="side-icon">▣</span><span>원재료/소모품</span></div>
+    <div class="submenu-item side-link" data-tab="purchased"><span class="side-icon">▤</span><span>완제품/상품</span></div>
+
+    <div class="side-section-title">2. 생산 · 재고</div>
+    <div class="submenu-item side-link" data-tab="production"><span class="side-icon">▦</span><span>생산 관리</span></div>
+    <div class="submenu-item side-link" data-tab="productionInventory"><span class="side-icon">▥</span><span>생산 재고</span></div>
+    <div class="submenu-item side-link" data-tab="productionCost"><span class="side-icon">₩</span><span>생산 원가</span></div>
+    <div class="submenu-item side-link" data-tab="currentInventory"><span class="side-icon">▥</span><span>현재 재고</span></div>
+    <div class="submenu-item side-link" data-tab="inventoryBacktrace"><span class="side-icon">↯</span><span>매출기반 차감</span></div>
+    <div class="submenu-item side-link" data-tab="inventoryDiff"><span class="side-icon">△</span><span>재고 차이</span></div>
+
+    <div class="side-section-title">3. 판매 · 채널</div>
+    <div class="menu-item menu-sales side-link" data-tab="sales"><span class="side-icon">♙</span><span>매출 관리</span></div>
+    <div class="submenu-item side-link" data-tab="channelPrices"><span class="side-icon">↳</span><span>채널별 가격</span></div>
+    <div class="submenu-item side-link" data-tab="deliverySettlement"><span class="side-icon">⇄</span><span>배달 정산</span></div>
+    <div class="submenu-item side-link" data-tab="smartstore"><span class="side-icon">□</span><span>스마트스토어/온라인</span></div>
+    <div class="submenu-item side-link" data-tab="b2b"><span class="side-icon">▧</span><span>납품/B2B</span></div>
+    <div class="submenu-item side-link" data-tab="setOptions"><span class="side-icon">↳</span><span>세트/옵션 분해</span></div>
+
+    <div class="side-section-title">4. 레시피 · 원가</div>
+    <div class="submenu-item side-link" data-tab="recipeview"><span class="side-icon">♙</span><span>레시피북</span></div>
+    <div class="submenu-item side-link" data-tab="recipes"><span class="side-icon">♧</span><span>원가 분석</span></div>
+    <div class="submenu-item side-link" data-tab="optionCost"><span class="side-icon">↳</span><span>옵션 원가</span></div>
+    <div class="submenu-item side-link" data-tab="setCost"><span class="side-icon">↳</span><span>세트 원가</span></div>
+
+    <div class="side-section-title">5. 정산 · 손익</div>
+    <div class="submenu-item side-link" data-tab="expenses"><span class="side-icon">♙</span><span>운영비/마케팅비</span></div>
+    <div class="submenu-item side-link" data-tab="monthly"><span class="side-icon">⌁</span><span>월간 손익</span></div>
+
+    <div class="side-section-title">6. AI 검수 · 설정</div>
+    <div class="submenu-item side-link" data-tab="reviewInbox"><span class="side-icon">?</span><span>확인필요 통합</span></div>
+    <div class="submenu-item side-link" data-tab="storeProfile"><span class="side-icon">◎</span><span>매장/업종 프로필</span></div>
+    <div class="submenu-item side-link" data-tab="settings"><span class="side-icon">▤</span><span>데이터 관리</span></div>
+
+    <button class="sidebar-collapse" type="button" id="atcSidebarCollapse"><span>‹</span><span>접기</span></button>
+  </nav>
+</aside>
+
+<main>
+  <!-- 원재료 관리 -->
+  <section id="tab-dashboard" class="tab active">
+  <h2>🏠 사장님 대시보드</h2>
+  <div style="padding:40px;text-align:center;color:#999;">
+    <p>매입·매출·재고 기록이 쌓이면 요약 화면이 채워집니다.</p>
+  </div>
+</section>
+
+<section id="tab-ingredients" class="tab">
+    <div class="card">
+      <h2>원재료 관리</h2>
+      <p style="font-size:12px; color:#666; margin:0 0 10px;">원재료 Master 정보를 관리합니다. 매입 입력·이력 관리는 매입 관리 탭에서 처리합니다.</p>
+      <input id="ingredientSearch" type="search" placeholder="원재료 검색" style="width:100%;max-width:360px;margin:0 0 10px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;">
+      <div class="filter-tabs" id="ingredientFilterTabs"></div>
+      <div id="ingredientsList"></div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn" id="btnAddIng">+ 재료 추가</button>
+        <button class="btn danger" id="btnIngredientDeleteMode" type="button" data-atc-safe-skip="1">삭제하기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- v5.9 매입 관리 -->
+  <section id="tab-purchases" class="tab">
+    <div class="card">
+      <h2>🧾 매입 관리</h2>
+      <p style="font-size:12px;color:#666;margin:0 0 12px;">모든 매입 입력·가져오기·과거이력 조회·수정을 한 곳에서 관리합니다.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+        <button class="btn" id="btnPurchaseManualToggle" type="button">+ 새 매입 추가</button>
+        <button class="btn" id="v56-open-import" type="button">🧾 이미지/영수증/파일 추가</button>
+        <button class="btn" id="btnV589PurchaseImport" type="button">📊 매입 Excel/CSV 가져오기</button>
+        <button class="btn ghost" id="btnV589PurchaseExportXlsx" type="button">📥 Excel 내보내기</button>
+        <button class="btn ghost" id="btnV589PurchaseExportCsv" type="button">📄 CSV 내보내기</button>
+        <button class="btn ghost" id="btnV589UndoPurchaseImport" type="button">↩ 최근 가져오기 취소</button>
+        <button class="btn ghost" id="btnV589ManageImported" type="button">가져온 신규 품목 관리</button>
+        <input type="file" id="v589PurchaseFile" style="display:none;" accept=".xlsx,.xls,.csv"/>
+      </div>
+
+      <div id="purchaseManualPanel" style="display:none;border:1px solid var(--line);background:#fffdf9;border-radius:9px;padding:12px;margin-bottom:14px;">
+        <div id="pmNewPanelTitle" style="font-weight:700;margin-bottom:8px;">새 매입 입력</div>
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:8px;">
+          <label style="font-size:12px;">구분<br><select id="pmNewType"><option value="ingredient">원재료</option><option value="purchased">완제품</option></select></label>
+          <label style="font-size:12px;">카테고리<br><select id="pmNewCategory"></select><div id="pmNewCategoryHint" style="font-size:10px;color:#888;margin-top:3px;">품목명에 따라 자동으로 분류합니다.</div></label>
+          <label style="font-size:12px;">재료명(제품명)<br>
+            <input id="pmNewItemName" list="pmNewItemList" type="text" placeholder="이름 검색 또는 직접 입력" autocomplete="off">
+            <datalist id="pmNewItemList"></datalist>
+            <input id="pmNewItem" type="hidden">
+            <div style="font-size:10px;color:#888;margin-top:3px;">기존 품목을 선택하거나 새 이름을 직접 입력할 수 있습니다.</div>
+          </label>
+          <label style="font-size:12px;">매입일<br><input type="date" id="pmNewDate"></label>
+          <label style="font-size:12px;">거래처<br><input type="text" id="pmNewSupplier" list="pmNewSupplierList" placeholder="검색 또는 선택" autocomplete="off"><datalist id="pmNewSupplierList"></datalist></label>
+          <label style="font-size:12px;">구매수량<br><input type="number" id="pmNewQty" min="0" step="0.01" value="1"></label>
+          <label style="font-size:12px;">구매단위<br><input type="text" id="pmNewUnit" list="pmNewUnitList" placeholder="개 / 박스 / kg / L"><datalist id="pmNewUnitList"><option value="개"><option value="박스"><option value="봉"><option value="팩"><option value="세트"><option value="kg"><option value="g"><option value="L"><option value="ml"></datalist></label>
+          <label style="font-size:12px;" id="pmNewConvertedQtyLabel">개당/박스당 규격<br><input type="number" id="pmNewConvertedQty" min="0" step="0.01" placeholder="예: 1000"></label>
+          <label style="font-size:12px;" id="pmNewConvertedUnitLabel">규격단위<br><input type="text" id="pmNewConvertedUnit" list="pmNewConvertedUnitList" placeholder="g / ml / 개 / 조각"><datalist id="pmNewConvertedUnitList"><option value="g"><option value="kg"><option value="ml"><option value="L"><option value="개"><option value="조각"><option value="병"><option value="캔"></datalist></label>
+          <label style="font-size:12px;">개당/구매단위 가격<br><input type="number" id="pmNewUnitPrice" min="0" step="1" placeholder="예: 2300"></label>
+          <label style="font-size:12px;">총금액<br><input type="number" id="pmNewTotal" min="0" step="1" value="0"></label>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;"><button class="btn small" id="pmNewSave" type="button">매입 저장</button><button class="btn ghost small" id="pmNewCancel" type="button">취소</button></div>
+      </div>
+
+      <div id="v590SupplierCompare" style="border:1px solid var(--line);border-radius:9px;background:#fffdf9;padding:12px;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+          <div>
+            <div style="font-weight:700;">💰 거래처별 가격 비교</div>
+            <div style="font-size:11px;color:#777;margin-top:3px;">같은 재료(제품)·같은 기준단위의 매입 이력만 비교합니다.</div>
+          </div>
+          <div id="v590SupplierBest" style="font-size:12px;font-weight:700;color:#4f6b3a;"></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-bottom:10px;">
+          <label style="font-size:12px;">구분<br>
+            <select id="v590CompareType" style="min-width:120px;padding:7px;border:1px solid var(--line);border-radius:7px;">
+              <option value="ingredient">원재료</option>
+              <option value="purchased">완제품</option>
+            </select>
+          </label>
+          <label style="font-size:12px;flex:1;min-width:220px;">품목<br>
+            <select id="v590CompareItem" style="width:100%;padding:7px;border:1px solid var(--line);border-radius:7px;"></select>
+          </label>
+          <label style="font-size:12px;">기준단위<br>
+            <select id="v590CompareUnit" style="min-width:110px;padding:7px;border:1px solid var(--line);border-radius:7px;"></select>
+          </label>
+        </div>
+        <div style="overflow-x:auto;border:1px solid var(--line);border-radius:8px;">
+          <table style="min-width:760px;margin:0;">
+            <thead><tr><th>거래처</th><th>최근 매입일</th><th>최근단가</th><th>평균단가</th><th>최저단가</th><th>최고단가</th><th>매입횟수</th><th>평균 대비</th></tr></thead>
+            <tbody id="v590SupplierCompareBody"></tbody>
+          </table>
+        </div>
+        <div id="v590SupplierCompareEmpty" class="muted" style="display:none;padding:18px;text-align:center;">비교 가능한 매입 이력이 없습니다.</div>
+      </div>
+
+      <div id="purchaseManagerSummary" style="display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:8px;margin-bottom:12px;"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-bottom:12px;">
+        <label style="font-size:12px;">시작일<br><input type="date" id="purchaseManagerFrom" style="padding:7px;border:1px solid var(--line);border-radius:7px;"></label>
+        <label style="font-size:12px;">종료일<br><input type="date" id="purchaseManagerTo" style="padding:7px;border:1px solid var(--line);border-radius:7px;"></label>
+        <label style="font-size:12px;">구분<br><select id="purchaseManagerType" style="padding:7px;border:1px solid var(--line);border-radius:7px;"><option value="">전체</option><option value="ingredient">원재료</option><option value="purchased">완제품</option></select></label>
+        <label style="font-size:12px;">거래처<br><select id="purchaseManagerSupplier" style="min-width:150px;padding:7px;border:1px solid var(--line);border-radius:7px;"><option value="">전체</option></select></label>
+        <label style="font-size:12px;flex:1;min-width:220px;">검색<br><input type="search" id="purchaseManagerSearch" placeholder="품목명·원본 품목명·거래처 검색" style="width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:7px;"></label>
+        <button class="btn ghost" type="button" id="purchaseManagerReset">필터 초기화</button>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0 8px;">
+        <div id="purchaseManagerSelectedInfo" style="font-size:12px;color:#666;">선택 0건</div>
+        <button class="btn danger" type="button" id="purchaseManagerDeleteSelected" data-atc-safe-skip="1" disabled>선택 삭제 (0건)</button>
+      </div>
+      <div id="purchaseManagerScroll" style="overflow-x:auto;scrollbar-gutter:stable;border:1px solid var(--line);border-radius:8px;"><table style="min-width:1540px;margin:0;"><thead><tr><th style="width:38px;text-align:center;"><input type="checkbox" id="purchaseManagerSelectAll" aria-label="현재 조회 목록 전체 선택"></th><th>날짜</th><th>구분</th><th>재료명(제품명)</th><th>원본 품목명</th><th>거래처</th><th>구매수량</th><th>구매단위</th><th>환산수량</th><th>환산단위</th><th>환산단가</th><th>총금액</th><th>3개월 평균 대비</th><th>3개월 최저가</th><th style="position:sticky;right:0;background:#f7f4ef;z-index:3;box-shadow:-4px 0 6px rgba(0,0,0,.06);">관리</th></tr></thead><tbody id="purchaseManagerBody"></tbody></table></div><div style="font-size:11px;color:#888;margin-top:5px;">↔ 표가 넓을 경우 좌우로 스크롤할 수 있습니다. 수정·삭제 버튼은 오른쪽에 고정됩니다.</div>
+      <div id="purchaseManagerEmpty" class="muted" style="display:none;padding:24px;text-align:center;">조건에 맞는 매입 이력이 없습니다.</div>
+    </div>
+  </section>
+
+  <section id="tab-sales" class="tab">
+  <div class="card"><h2>💳 매출 관리</h2><div style="padding:40px;text-align:center;color:#888;">매출 파일을 가져오면 채널·메뉴·옵션 기준으로 분석됩니다.</div></div>
+  </section>
+
+  <section id="tab-production" class="tab">
+    <div class="card atc-channel-card">
+      <div class="atc-beta-kicker">BETA CORE</div>
+      <h2>생산 관리</h2>
+      <p class="v693-note">직접 생산한 베이스, 디저트, 완제품의 생산량과 사용 원재료를 연결하는 기본 화면입니다. 베타에서는 생산 품목과 레시피/매입 데이터를 먼저 정리합니다.</p>
+      <div class="atc-beta-grid"><div><b>1차 확인</b><span>생산 품목 등록 기준</span></div><div><b>연결 데이터</b><span>레시피, 원재료, 완제품</span></div><div><b>다음 단계</b><span>생산량 저장과 원재료 차감</span></div></div>
+      <ul class="atc-beta-list"><li>콜드브루, 수제청, 크림, 베이커리, 택배 상품처럼 직접 만드는 품목을 기준으로 봅니다.</li><li>생산 기능은 특정 업종 옵션이 아니라 ATC-F&B의 기본 축으로 둡니다.</li><li>실제 차감 자동화 전까지는 매입 관리와 레시피북 데이터를 먼저 쌓는 흐름입니다.</li></ul>
+    </div>
+  </section>
+
+  <section id="tab-productionInventory" class="tab">
+    <div class="card atc-channel-card">
+      <div class="atc-beta-kicker">BETA CORE</div>
+      <h2>생산 재고</h2>
+      <p class="v693-note">생산된 완제품·반제품의 남은 수량과 출고 가능 재고를 관리할 화면입니다.</p>
+      <div class="atc-beta-grid"><div><b>관리 대상</b><span>완제품, 반제품, 택배 상품</span></div><div><b>연결 기준</b><span>생산 수량 - 판매/출고</span></div><div><b>베타 안내</b><span>현재는 구조 안내와 데이터 준비 단계</span></div></div>
+    </div>
+  </section>
+
+  <section id="tab-productionCost" class="tab">
+    <div class="card atc-channel-card">
+      <div class="atc-beta-kicker">BETA CORE</div>
+      <h2>생산 원가</h2>
+      <p class="v693-note">생산 1회분에 들어가는 원재료, 포장재, 폐기·로스까지 연결해 제품 원가를 보는 화면입니다.</p>
+      <div class="atc-beta-grid"><div><b>원가 기준</b><span>레시피 원가 + 포장재</span></div><div><b>확장 기준</b><span>생산 로스, 폐기, 출고 단가</span></div><div><b>활용</b><span>스마트스토어 상품 원가와 연결</span></div></div>
+    </div>
+  </section>
+
+  <section id="tab-smartstore" class="tab">
+    <div class="card atc-channel-card atc-smartstore-card">
+      <div class="atc-beta-kicker">SMARTSTORE BETA</div>
+      <h2>스마트스토어/온라인</h2>
+      <p class="v693-note">스마트스토어 상품, 택배 판매, 포장비, 배송비 부담분, 플랫폼 수수료, 온라인 정산을 분리해서 관리하는 베타 핵심 화면입니다.</p>
+      <div class="atc-beta-grid"><div><b>상품 기준</b><span>완제품/세트상품/택배상품</span></div><div><b>원가 기준</b><span>상품 원가 + 포장재 + 배송 부담</span></div><div><b>정산 기준</b><span>판매가 - 할인 - 수수료 - 배송비</span></div></div>
+      <div class="atc-beta-flow"><span>완제품/상품</span><i>→</i><span>포장재</span><i>→</i><span>택배/배송비</span><i>→</i><span>온라인 정산</span></div>
+      <ul class="atc-beta-list"><li>스마트스토어 테스터는 먼저 완제품/상품, 포장재, 매입 단가를 정리합니다.</li><li>온라인 판매는 배달 정산과 다르게 택배·포장·플랫폼 수수료를 별도로 봅니다.</li><li>향후 네이버 정산 파일과 상품별 원가를 연결하는 기준 화면입니다.</li></ul>
+    </div>
+  </section>
+
+  <section id="tab-b2b" class="tab">
+    <div class="card atc-channel-card">
+      <div class="atc-beta-kicker">B2B BETA</div>
+      <h2>납품/B2B</h2>
+      <p class="v693-note">카페 납품, 거래처별 단가, 정기 출고, 대량 생산 원가를 분리해서 보는 화면입니다.</p>
+      <div class="atc-beta-grid"><div><b>거래 기준</b><span>납품처, 납품 단가</span></div><div><b>생산 연결</b><span>예약 생산, 출고 수량</span></div><div><b>정산 연결</b><span>거래처별 매출/미수</span></div></div>
+    </div>
+  </section>
+
+  <!-- 메뉴 레시피 -->
+  <section id="tab-recipes" class="tab">
+    <div class="card">
+      <h2>메뉴 레시피 원가계산</h2>
+      <div class="filter-tabs" id="recipeCostFilterTabs"></div>
+      <div id="recipesList"></div>
+    </div>
+  </section>
+
+  <!-- 발주 완제품 -->
+  <section id="tab-purchased" class="tab">
+    <div class="card">
+      <h2>발주 완제품 매입원가</h2>
+      <input id="purchasedSearch" type="search" placeholder="발주완제품 검색" style="width:100%;max-width:360px;margin:0 0 10px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;">
+      <div class="filter-tabs" id="purchasedFilterTabs"></div>
+      <table><thead><tr><th style="width:20%">품목명</th><th style="width:15%">공급처</th><th style="width:10%">누적 매입량</th><th style="width:10%">누적 매입금액</th><th style="width:10%">평균 개당원가</th><th style="width:10%">판매가</th><th style="width:10%">이익</th><th style="width:5%"></th></tr></thead><tbody id="purchasedBody"></tbody></table>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn" id="btnAddPurchased">+ 품목 추가</button>
+        <button class="btn danger" id="btnPurchasedDeleteMode" type="button" data-atc-safe-skip="1">삭제하기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 레시피 조회 -->
+  <section id="tab-recipeview" class="tab">
+    <div class="card">
+      <h2>레시피 조회</h2>
+      <div style="margin-bottom:16px; display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn" id="btnAddNewRecipe">+ 새 메뉴 추가</button>
+        <button class="btn" id="btnV589RecipeImport" type="button">🍞 레시피 Excel/CSV/한글 가져오기</button>
+        <button class="btn ghost" id="btnV589RecipeExportXlsx" type="button">📥 Excel 내보내기</button>
+        <button class="btn ghost" id="btnV589RecipeExportCsv" type="button">📄 CSV 내보내기</button>
+        <button class="btn danger" id="btnDeleteMode" data-atc-safe-skip="1">삭제하기</button>
+        <input type="file" id="v589RecipeFile" style="display:none;" accept=".xlsx,.xls,.csv,.hwp,.hwpx,.docx"/>
+      </div>
+      <input id="recipeViewSearch" type="search" placeholder="레시피 검색" style="width:100%;max-width:360px;margin:0 0 10px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;">
+      <div class="filter-tabs" id="recipeViewFilterTabs"></div>
+      <div id="recipeViewList"></div>
+    </div>
+  </section>
+
+  <!-- 운영비 관리 -->
+  <section id="tab-expenses" class="tab">
+    <div class="card">
+      <h2>운영비 관리</h2>
+      <div class="month-selector">
+        <label style="font-weight:600;">기준월:</label>
+        <input type="month" id="expenseMonth" />
+      </div>
+
+      <!-- 고정비 -->
+      <div class="expense-category">
+        <h3>고정비</h3>
+        <div id="fixedExpenses"></div>
+        <button class="btn small" id="btnAddFixedExpense">+ 고정비 항목 추가</button>
+      </div>
+
+      <!-- 변동비 -->
+      <div class="expense-category">
+        <h3>변동비</h3>
+        <div id="variableExpenses"></div>
+        <button class="btn small" id="btnAddVariableExpense">+ 변동비 항목 추가</button>
+      </div>
+
+      <!-- 인건비 -->
+      <div class="expense-category">
+        <h3>인건비</h3>
+        <div id="laborExpenses"></div>
+        <button class="btn small" id="btnAddLaborExpense">+ 인건비 항목 추가</button>
+      </div>
+
+      <!-- 운영비 요약 -->
+      <div class="summary-box">
+        <div class="summary-row">
+          <span class="summary-label">고정비 합계</span>
+          <span class="summary-value" id="sumFixed">0원</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">변동비 합계</span>
+          <span class="summary-value" id="sumVariable">0원</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">인건비 합계</span>
+          <span class="summary-value" id="sumLabor">0원</span>
+        </div>
+        <div class="summary-row" style="border-top:2px solid var(--line); padding-top:8px; margin-top:8px;">
+          <span class="summary-label" style="font-size:14px;">총 운영비</span>
+          <span class="summary-value" style="font-size:14px; color:var(--warn);" id="sumTotal">0원</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 월간 손익 -->
+  <section id="tab-monthly" class="tab">
+    <div class="card">
+      <h2>월간 손익 관리</h2>
+      <div class="month-selector">
+        <label style="font-weight:600;">기준월:</label>
+        <input type="month" id="profitMonth" />
+      </div>
+
+      <!-- 매출 및 재료비 입력 -->
+      <div class="summary-box" style="background:#f0f8f0;">
+        <div class="summary-row">
+          <span class="summary-label">총매출</span>
+          <input type="number" id="monthlyRevenue" placeholder="0" style="width:150px; padding:6px;" min="0" step="1000000" />
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">재료비</span>
+          <input type="number" id="monthlyMaterialCost" placeholder="0" style="width:150px; padding:6px;" min="0" step="100000" />
+        </div>
+      </div>
+
+      <!-- 손익 요약 -->
+      <div class="summary-box" style="background:#fff8f0; border-left-color:var(--warn);">
+        <div class="summary-row">
+          <span class="summary-label">총매출</span>
+          <span class="summary-value" id="pRevenue">데이터 없음</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">재료비</span>
+          <span class="summary-value" id="pMaterial">데이터 없음</span>
+        </div>
+        <div class="summary-row" style="border-top:1px solid var(--line); padding-top:6px; margin-top:6px;">
+          <span class="summary-label">매출총이익</span>
+          <span class="summary-value" id="pGrossProfit">데이터 없음</span>
+        </div>
+      </div>
+
+      <!-- 운영비 요약 -->
+      <div class="summary-box" style="background:#f5f5f5; border-left-color:var(--info);">
+        <div class="summary-row">
+          <span class="summary-label">고정비</span>
+          <span class="summary-value" id="pFixed">0원</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">변동비</span>
+          <span class="summary-value" id="pVariable">0원</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">인건비</span>
+          <span class="summary-value" id="pLabor">0원</span>
+        </div>
+        <div class="summary-row" style="border-top:1px solid var(--line); padding-top:6px; margin-top:6px;">
+          <span class="summary-label">총 운영비</span>
+          <span class="summary-value" id="pTotalExpense">0원</span>
+        </div>
+      </div>
+
+      <!-- 영업이익 -->
+      <div class="profit-section">
+        <div class="summary-row">
+          <span class="summary-label" style="font-size:14px;">영업이익</span>
+          <span class="summary-value" style="font-size:16px; color:var(--good);" id="pOperatingProfit">데이터 없음</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">원가율</span>
+          <span class="summary-value" id="pCostRate">데이터 없음</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">영업이익률</span>
+          <span class="summary-value" style="color:var(--good);" id="pProfitRate">데이터 없음</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 설정 -->
+  <section id="tab-settings" class="tab">
+    <div class="card" id="v660AdminOverlay" style="display:none;">
+      <h2>관리자 계정 관리</h2>
+      <p class="v693-note" style="margin-bottom:12px;">관리자 전용입니다. 테스트/운영 계정을 만들고, 플랜 변경·비밀번호 초기화·중지·삭제를 처리합니다.</p>
+      <div id="v660AdminMsg" class="v693-note" style="min-height:18px;margin-bottom:10px;color:#6b5b47;"></div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(150px,1fr));gap:8px;align-items:end;margin-bottom:12px;">
+        <label style="font-size:12px;font-weight:700;">아이디<input id="v660UserId" type="text" placeholder="예: store01" style="width:100%;margin-top:5px;"></label>
+        <label style="font-size:12px;font-weight:700;">매장명<input id="v660StoreName" type="text" placeholder="매장/브랜드명" style="width:100%;margin-top:5px;"></label>
+        <label style="font-size:12px;font-weight:700;">비밀번호<input id="v660Password" type="password" placeholder="8자 이상" style="width:100%;margin-top:5px;"></label>
+        <label style="font-size:12px;font-weight:700;">플랜<select id="v660Plan" style="width:100%;margin-top:5px;"><option value="basic">Basic</option><option value="standard">Standard</option><option value="premium">Premium</option><option value="standard_trial">Standard Trial</option><option value="premium_trial">Premium Trial</option></select></label>
+        <label style="font-size:12px;font-weight:700;">업종<select id="v660Industry" style="width:100%;margin-top:5px;"><option>카페</option><option>음식점</option><option>베이커리</option><option>로스터리</option><option>식품판매</option><option>기타</option></select></label>
+        <button class="btn" id="v660CreateUser" type="button">계정 생성</button>
+        <label style="font-size:12px;font-weight:700;grid-column:1 / span 2;">본인 확인 질문<input id="v660RecoveryQuestion" type="text" placeholder="예: 사업자명은?" style="width:100%;margin-top:5px;"></label>
+        <label style="font-size:12px;font-weight:700;">본인 확인 답변<input id="v660RecoveryAnswer" type="text" placeholder="답변" style="width:100%;margin-top:5px;"></label>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;"><button class="btn ghost small" id="v660ReloadUsers" type="button">계정 목록 새로고침</button><span class="v693-note">admin 계정은 삭제/중지할 수 없습니다.</span></div>
+      <div id="v660Users" class="v693-scroll" style="max-height:420px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff;"></div>
+    </div>
+    <div class="card">
+      <h2>카테고리 관리</h2>
+      <p style="font-size:13px;color:#666;margin-bottom:12px;">카테고리 추가·이름 수정·삭제를 여기서 관리합니다. 이름은 목록에서 바로 수정하고 Enter를 누르거나 포커스를 벗어나면 저장됩니다.</p>
+      <div style="padding:12px;border:1px solid var(--line);border-radius:9px;background:#fffdf9;margin-bottom:16px;">
+        <div style="font-size:13px;font-weight:800;margin-bottom:7px;">업종별 기본 카테고리 생성</div>
+        <div style="font-size:11px;color:#777;margin-bottom:8px;">기존 카테고리는 유지하고, 없는 기본 카테고리만 추가합니다.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;">
+          <label style="font-size:12px;font-weight:700;">업종
+            <select id="v635IndustryPreset" style="display:block;margin-top:5px;min-width:180px;">
+              <option value="cafe">카페</option>
+              <option value="restaurant">음식점</option>
+              <option value="bakery">베이커리</option>
+              <option value="roastery">로스터리</option>
+              <option value="food">식품 판매</option>
+            </select>
+          </label>
+          <button class="btn" id="v635CreateIndustryCategories" type="button">기본 카테고리 생성</button>
+        </div>
+      </div>
+      <div id="categorySection"></div>
+    </div>
+    <div class="card">
+      <h2>매입 자동화 설정</h2>
+      <p style="font-size:13px;color:#666;margin-bottom:14px;">자동 환산과 이상치 경고 기준을 관리합니다. 잘못 학습된 포장규격은 매입 이력을 찾지 않고 여기서 바로 수정하거나 삭제할 수 있습니다.</p>
+      <div style="display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;">
+        <label style="font-size:12px;font-weight:700;">환산단가 이상치 경고 기준
+          <div style="display:flex;align-items:center;gap:6px;margin-top:5px;"><input id="v631AnomalyThreshold" type="number" min="5" max="100" step="1" value="20" style="width:90px;"><span>% 이상</span></div>
+        </label>
+        <button class="btn" id="v631SaveAnomalyThreshold" type="button">경고 기준 저장</button>
+        <button class="btn ghost" id="v631OpenPackRules" type="button">📦 거래처별 학습규격 관리</button>
+      </div>
+      <div id="v631AnomalyThresholdNote" style="font-size:12px;color:#777;margin-top:9px;">기본 20% · 같은 Master/거래처/환산단위의 최근 매입과 비교합니다.</div>
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line);">
+        <div style="font-size:13px;font-weight:800;margin-bottom:8px;">품목별 이상단가 기준</div>
+        <div style="display:flex;gap:8px;align-items:end;flex-wrap:wrap;">
+          <label style="font-size:12px;font-weight:700;flex:1;min-width:200px;">Master 원재료
+            <select id="v633AnomalyItem" style="width:100%;margin-top:5px;"></select>
+          </label>
+          <label style="font-size:12px;font-weight:700;">경고 기준
+            <div style="display:flex;align-items:center;gap:6px;margin-top:5px;"><input id="v633AnomalyItemRate" type="number" min="5" max="100" step="1" value="20" style="width:90px;"><span>% 이상</span></div>
+          </label>
+          <button class="btn" id="v633SaveAnomalyItemRate" type="button">품목 기준 저장</button>
+        </div>
+        <div style="font-size:11px;color:#777;margin-top:7px;">품목별 기준이 있으면 기본 기준보다 우선 적용됩니다. 최근 동일 거래처·환산단위의 유효 매입 3건 이상을 최근 5건 중앙값과 비교합니다.</div>
+        <div id="v633AnomalyItemRules" style="margin-top:10px;"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>데이터 관리</h2>
+      <p style="font-size:13px; color:#666; margin-bottom:16px;">모든 데이터를 JSON 파일로 백업하고 복원할 수 있습니다.</p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn" id="btnExport">📥 데이터 내보내기</button>
+        <button class="btn" id="btnImport">📤 데이터 불러오기</button>
+        <input type="file" id="importFile" style="display:none;" accept=".json"/>
+      </div>
+    </div>
+  </section>
+</main>
+
+
+<!-- v6.32: 거래처별 학습 포장규격 인라인 관리 -->
+<div id="v631PackRuleModal" class="modal">
+  <div class="modal-content" style="width:min(900px,96vw);max-width:900px;max-height:86vh;overflow:auto;">
+    <button class="modal-close" id="v631PackRuleClose" type="button">×</button>
+    <h3>거래처별 학습규격 관리</h3>
+    <p style="font-size:12px;color:#666;line-height:1.6;">자동 환산에 사용하는 <b>Master + 거래처 + 구매단위</b> 규칙입니다. 목록에서 여러 규격을 바로 수정한 뒤 한 번에 저장할 수 있습니다. 삭제 시 해당 자동환산 규칙만 초기화되며, 과거 매입 이력은 변경하지 않습니다.</p>
+    <div id="v631PackRuleBody"></div>
+  </div>
+</div>
+
+<!-- v6.32: 모든 OCR 엔진 공용 N개 행 분리 -->
+<div id="v631VisionSplitModal" class="modal">
+  <div class="modal-content" style="width:min(860px,96vw);max-width:860px;max-height:88vh;overflow:auto;">
+    <button class="modal-close" id="v631VisionSplitClose" type="button">×</button>
+    <h3>영수증 행 분리</h3>
+    <p id="v631VisionSplitOriginal" style="font-size:12px;color:#666;line-height:1.6;"></p>
+    <div id="v632SplitRows" style="display:flex;flex-direction:column;gap:8px;margin-top:10px;"></div>
+    <button class="btn ghost small" id="v632AddSplitRow" type="button" style="margin-top:9px;">＋ 품목 추가</button>
+    <div id="v631SplitHint" style="font-size:12px;color:#666;margin-top:10px;padding:9px;background:#fafafa;border-radius:7px;"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+      <button class="btn ghost" id="v631VisionSplitCancel" type="button">취소</button>
+      <button class="btn" id="v631VisionSplitApply" type="button">행 분리 적용</button>
+    </div>
+  </div>
+</div>
+
+<!-- v5.6/v6.15: 이미지·영수증·파일 추가 -->
+<div id="v56-import-modal" class="modal" aria-hidden="true">
+  <div class="modal-content v56-box">
+    <button class="modal-close" id="v56-close" type="button" aria-label="닫기" data-atc-safe-skip="1">×</button>
+    <h3>이미지/영수증/파일 추가</h3>
+    <div class="v615-receipt-guide"><b>영수증 사진 또는 매입 파일을 추가하세요.</b>이미지는 Vision AI로 품목 후보를 만들고, Excel/CSV는 기존 매입 가져오기 흐름으로 검수합니다. 분석 후 바로 저장되지 않으며, 선택 항목 확정 등록을 눌러야 반영됩니다.</div>
+    <div id="v56-drop" style="border:1px dashed var(--line);border-radius:12px;padding:16px;background:#fbfaf8;margin-bottom:12px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+        <button class="btn" id="v56-camera" type="button">카메라로 촬영</button>
+        <button class="btn" id="v56-photo" type="button">이미지 선택</button>
+        <button class="btn ghost" id="v56-file" type="button">Excel/CSV 선택</button>
+        <button class="btn ghost" id="v56-clear" type="button" data-atc-safe-skip="1">새로 시작</button>
+      </div>
+      <div style="font-size:12px;color:#666;line-height:1.5;">여기에 파일을 끌어다 놓아도 됩니다. 이미지와 Excel/CSV는 한 번에 섞어 처리하지 않습니다.</div>
+      <input id="v56-camera-input" type="file" accept="image/*" capture="environment" style="display:none;">
+      <input id="v56-photo-input" type="file" accept="image/*" multiple style="display:none;">
+      <input id="v56-file-input" type="file" accept=".xlsx,.xls,.csv,image/*" multiple style="display:none;">
+    </div>
+    <div id="v56-files" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;"></div>
+    <div id="v56-progress" style="display:none;height:6px;background:#eee;border-radius:999px;overflow:hidden;margin:8px 0;"><i style="display:block;height:100%;width:0;background:var(--green-700);"></i></div>
+    <div id="v56-message" style="font-size:12px;color:#666;margin:8px 0;white-space:pre-wrap;"></div>
+    <div id="v573-vision-status" style="display:none;margin:8px 0;padding:10px;border-radius:10px;font-size:12px;white-space:pre-wrap;"></div>
+    <div id="v573-vision-actions" style="display:none;gap:8px;flex-wrap:wrap;margin:8px 0;"><button class="btn ghost small" id="v573-show-json" type="button">AI JSON 보기</button></div>
+    <div id="v573-json-panel" style="display:none;"><div id="v573-json-meta" style="font-size:11px;color:#777;margin-bottom:4px;"></div><pre id="v573-json" style="max-height:220px;overflow:auto;background:#111;color:#eee;padding:10px;border-radius:8px;font-size:11px;"></pre></div>
+    <div id="v572-ocr-status" class="v615-debug-only" style="display:none;"></div>
+    <div id="v572-ocr-actions" class="v615-debug-only" style="display:none;gap:8px;"><button class="btn ghost small" id="v572-show-raw" type="button">OCR 원문 보기</button><button class="btn ghost small" id="v572-copy-raw" type="button">원문 복사</button></div>
+    <div id="v572-raw-panel" style="display:none;"><div id="v572-raw-meta" style="font-size:11px;color:#777;margin-bottom:4px;"></div><pre id="v572-raw-text" style="max-height:220px;overflow:auto;background:#111;color:#eee;padding:10px;border-radius:8px;font-size:11px;"></pre></div>
+    <div id="v56-ocr-debug" class="v615-debug-only" style="display:none;"></div>
+    <div id="v56-results" class="v56-table-wrap" style="overflow:auto;margin-top:12px;"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+      <button class="btn ghost" id="v56-retry-ocr" type="button" style="display:none;">다시 분석</button>
+      <button class="btn ghost v615-debug-only" id="v56-debug-ocr" type="button">진단 보기</button>
+      <button class="btn" id="v56-analyze" type="button">분석 시작</button>
+    </div>
+  </div>
+</div>
+
+<!-- v5.89: Excel/CSV 가져오기 미리보기 -->
+<div id="v589ManageModal" class="modal" style="display:none;">
+  <div class="modal-card" style="max-width:760px;">
+    <div class="modal-head"><h3>가져온 신규 품목 관리</h3><button class="btn ghost" type="button" onclick="document.getElementById('v589ManageModal').style.display='none'">닫기</button></div>
+    <div class="modal-body"><div id="v589ManageImportedBody"></div></div>
+  </div>
+</div>
+<div id="v589ImportModal" class="modal">
+  <div class="modal-content" style="width:min(1180px,96vw);max-width:1180px;max-height:88vh;overflow:auto;">
+    <button class="modal-close" id="v589ImportClose" type="button">×</button>
+    <h3 id="v589ImportTitle">데이터 가져오기</h3>
+    <div id="v589ImportSummary" style="font-size:12px;color:#666;margin-bottom:10px;"></div>
+    <div id="v589ImportStatus" class="v693-note" style="font-size:12px;color:#6b5b47;margin:-2px 0 10px;min-height:18px;"></div>
+    <div id="v589ImportPreview" style="overflow:auto;"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+      <button class="btn ghost" id="v589ImportCancel" type="button">취소</button>
+      <button class="btn" id="v589ImportConfirm" type="button">확정 등록</button>
+    </div>
+  </div>
+</div>
+
+<!-- 모달: 고정비 이력 -->
+<div id="fixedExpenseHistoryModal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeFixedExpenseModal()">×</button>
+    <h3 id="fixedExpenseModalTitle">고정비 이력</h3>
+    <div id="fixedExpenseHistoryList"></div>
+  </div>
+</div>
+
+<!-- 모달: 카테고리 삭제 -->
+<div id="deleteCategoryModal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeCategoryDeleteModal()">×</button>
+    <h3>카테고리 삭제</h3>
+    <p id="deleteCategoryMsg"></p>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn" id="btnMoveToDifferent">다른 카테고리로 이동</button>
+      <button class="btn" id="btnRemoveCategoryFromItems" data-atc-safe-skip="1">카테고리 제거</button>
+      <button class="btn ghost" onclick="closeCategoryDeleteModal()">취소</button>
+    </div>
+    <div id="moveToSelectDiv" style="display:none; margin-top:12px;">
+      <label style="font-size:12px; color:#666; margin-bottom:4px; display:block;">이동할 카테고리 선택:</label>
+      <select id="moveToSelect"></select>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/atc-v7041-js-bundle-core-main.js?v=7.247"></script>
+<script src="/assets/js/atc-v7041-js-bundle-render-catalog.js?v=7.234"></script>
+<script src="/assets/js/atc-v7041-js-bundle-render-admin.js?v=7.234"></script>
+<script src="/assets/js/atc-v7041-js-bundle-purchase-manager.js?v=7.235"></script>
+<script src="/assets/js/atc-v7096-plan-gates.js?v=7.177"></script>
+
+<div id="yesNoConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:99999;align-items:center;justify-content:center;padding:20px;">
+  <div style="width:min(420px,100%);background:#fff;border-radius:12px;padding:20px;box-shadow:0 12px 40px rgba(0,0,0,.2);">
+    <div id="yesNoConfirmMessage" style="font-size:14px;line-height:1.6;white-space:pre-wrap;margin-bottom:18px;">선택한 항목을 삭제하시겠습니까?</div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
+      <button class="btn ghost" id="yesNoConfirmNo" type="button">아니오</button>
+      <button class="btn danger" id="yesNoConfirmYes" type="button">예</button>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/atc-v7041-js-bundle-landing-sync.js?v=7.219"></script>
+<script src="/assets/js/atc-v7144-beta-tutorial.js?v=7.144"></script>
+<script src="/assets/js/atc-v7145-channel-scope.js?v=7.144"></script>
+<script src="/assets/js/atc-v7146-channel-settlement-templates.js?v=7.146"></script>
+
+<link rel="stylesheet" href="/assets/css/atc-v611-auth-mobile-css.css?v=7.144">
+<script src="/assets/js/atc-v611-auth-mobile-js.js?v=7.144"></script>
+
+<script src="/assets/js/atc-v7041-core-inline-05.js?v=7.144"></script>
+
+
+<script src="/assets/js/atc-v7041-js-bundle-purchase-core.js?v=7.235"></script>
+
+
+<script src="/assets/js/atc-v7041-js-bundle-integrity-fields.js?v=7.234"></script>
+
+<link rel="stylesheet" href="/assets/css/atc-v648-global-modal-close-style.css?v=7.144">
+<script src="/assets/js/atc-v7041-js-bundle-field-stability.js?v=7.234"></script>
+
+
+
+<!-- legacy purchase/admin bundles removed in v7.132 to stop duplicated safety/save handlers -->
+
+
+<script src="/assets/js/atc-v661-journey-js.js?v=7.177"></script>
+<script src="/assets/js/atc-v7147-mobile-gate-fix.js?v=7.177"></script>
+
+
+
+<!-- v6.64 — existing-purchase memory analysis gate. Base: v6.62 only. -->
+<link rel="stylesheet" href="/assets/css/atc-v664-existing-import-memory-style.css?v=7.144">
+<div id="v664ImportMemory" aria-hidden="true">
+  <div class="v664-memory-shell">
+    <div class="v664-memory-mark">ATC F&amp;B</div>
+    <div class="v664-memory-eyebrow">ROOTING MEMORY</div>
+    <div class="v664-tree-wrap" id="v664ImportTree" aria-hidden="true">
+      <video class="v685-tree-growth" data-src="/assets/tree-growth-animation.mp4?v=7.144" muted playsinline preload="auto" aria-label="기억이 나무로 자라는 모습"></video>
+      <div class="v664-glow"></div><div class="v664-soil"></div>
+      <i class="v664-trunk"></i><i class="v664-branch b1"></i><i class="v664-branch b2"></i>
+      <i class="v664-leaf l1"></i><i class="v664-leaf l2"></i><i class="v664-leaf l3"></i><i class="v664-leaf l4"></i><i class="v664-leaf l5"></i><i class="v664-leaf l6"></i>
+      <i class="v664-sprout s1"></i><i class="v664-sprout s2"></i>
+    </div>
+    <h2 class="v664-memory-title" id="v664ImportTitle">당신의 이전 기억들을 심고 있습니다.</h2>
+    <div class="v664-memory-text" id="v664ImportText">지나온 기록을 하나씩 살펴보고 있습니다.</div>
+    <div class="v664-progress"><div class="v664-progress-track"><i id="v664ImportBar"></i></div><b id="v664ImportPct">0%</b></div>
+    <div class="v664-ready" id="v664ImportReady">
+      <div class="v664-ready-question">분석이 완료되었습니다. 시작하시겠습니까?</div>
+      <button class="v664-start-btn" type="button" id="v664ImportStart">시작</button>
+    </div>
+    <div class="v681-complete-screen" id="v681ImportComplete" aria-hidden="true"><div class="v683-complete-art"><img src="/assets/tree-complete-screen-cropped.png?v=7.144" alt="ATC-F&B 당신의 성장을 함께합니다"></div><button class="v681-complete-action" type="button" id="v681ImportContinue">여정 시작하기 →</button></div>
+  </div>
+</div>
+<script src="/assets/js/atc-v664-existing-import-memory-js.js?v=7.181"></script>
+
+<!-- v6.65 — cinematic onboarding + inline existing-business history import. Canonical base: v6.64 only. -->
+<link rel="stylesheet" href="/assets/css/atc-v665-onboarding-style.css?v=7.144">
+<div class="v665-bg-notice" id="v665BackgroundNotice"><b id="v665BgTitle">과거 매입을 계속 정리하고 있습니다.</b><small id="v665BgText">검수한 최근 기록을 기준으로 나머지 과거 품목을 정리합니다.</small><button type="button" id="v665BgOpen" style="display:none;margin-top:10px;border:1px solid rgba(213,169,100,.35);background:#15110c;color:#e5c184;border-radius:9px;padding:8px 12px;cursor:pointer">결과 확인</button></div>
+<script src="/assets/js/atc-v7041-js-bundle-onboarding.js?v=7.181"></script>
+
+
+
+<!-- v6.66 — transition reliability hotfix after v6.65 field test -->
+<script src="/assets/js/atc-v666-transition-safety-js.js?v=7.144"></script>
+
+
+<!-- v6.667 — retain the five-scene copy and pacing; add only a restrained memory-style text reveal. -->
+<link rel="stylesheet" href="/assets/css/atc-v667-memory-reveal-style.css?v=7.144">
+<script src="/assets/js/atc-v667-memory-reveal-js.js?v=7.144"></script>
+
+
+<!-- v6.668 — preserve autoplay, but navigate the story by tapping its left and right halves. -->
+<link rel="stylesheet" href="/assets/css/atc-v7041-style-bundle-memory-typewriter.css?v=7.144">
+<script src="/assets/js/atc-v669-typewriter-js.js?v=7.144"></script>
+
+
+<!-- v6.670 — legible import controls and a more organic growth illustration. -->
+<link rel="stylesheet" href="/assets/css/atc-v7041-style-bundle-import-flow.css?v=7.144">
+<script src="/assets/js/atc-v673-flow-and-admin-js.js?v=7.180"></script>
+<!-- v6.677 — fixed-position, Maple-style narration: only the next character is written. -->
+<link rel="stylesheet" href="/assets/css/atc-v7041-style-bundle-growth.css?v=7.144">
+<script src="/assets/js/atc-v7041-js-bundle-growth.js?v=7.144"></script>
+
+</body>
+</html>
+
+<!-- v6.683 — a single-play growth asset, no legacy tree shapes, and a quiet living canopy. -->
+<link rel="stylesheet" href="/assets/css/atc-v7041-style-bundle-growth-sync.css?v=7.144">
+<script src="/assets/js/atc-v685-growth-sync-js.js?v=7.144"></script>
+
+<!-- v6.686 — keep purchase stock units separate from recipe-volume conversion. -->
+<script src="/assets/js/atc-v7041-js-bundle-purchase-import-guards.js?v=7.144"></script>
+
+<!-- v6.689 local test: keep manual purchase simple until the user needs conversion details. -->
+<link rel="stylesheet" href="/assets/css/atc-v689-manual-simple-style.css?v=7.144">
+<script src="/assets/js/atc-v7041-js-bundle-manual-guards.js?v=7.144"></script>
+
+<!-- v6.693: sales report import, daily/product preview, and set-menu detection. -->
+<link rel="stylesheet" href="/assets/css/atc-v693-sales-style.css?v=7.144">
+<script src="/assets/js/atc-v693-sales-import.js?v=7.186"></script>
+
+
+<!-- v6.691: final manual purchase conversion + empty-can review guard. -->
+<script src="/assets/js/atc-v7041-js-bundle-sales-tail.js?v=7.239"></script>
+<link rel="stylesheet" href="/assets/css/atc-v70-sidebar-roadmap-style.css?v=7.144">
+<script src="/assets/js/atc-v7041-js-bundle-pos-analysis.js?v=7.186"></script>
+<link rel="stylesheet" href="/assets/css/atc-v7011-open-analysis-style.css?v=7.144">
+<script src="/assets/js/atc-v7041-js-bundle-analysis-tabs.js?v=7.216"></script>
+
+<link rel="stylesheet" href="/assets/css/atc-v7011-ops-feedback-style.css?v=7.144">
+<script src="/assets/js/atc-v7011-practical-ops-feedback-ai.js?v=7.239"></script>
+
+<link rel="stylesheet" href="/assets/css/atc-v7011-working-analysis-style.css?v=7.144">
+<script src="/assets/js/atc-v7041-js-bundle-runtime-tail.js?v=7.239"></script>
+<link rel="stylesheet" href="/assets/css/atc-v7035-inventory-flow-style.css?v=7.144">
+<script src="/assets/js/atc-v7041-js-bundle-eof-guards.js?v=7.235"></script>
+
+<!-- v7.148: final QA fixes for global menu search. -->
+<script src="/assets/js/atc-v7148-final-qa-fixes.js?v=7.148"></script>
+<script src="/assets/js/atc-v7149-operation-sidebar.js?v=7.149"></script>
+<script src="/assets/js/atc-v7150-production-incoming.js?v=7.212"></script>
+<link rel="stylesheet" href="/assets/css/atc-v7151-purchase-admin-fixes.css?v=7.151">
+<script src="/assets/js/atc-v7151-purchase-admin-fixes.js?v=7.188"></script>
+<script src="/assets/js/atc-v7153-admin-calendar.js?v=7.212"></script>
+<script src="/assets/js/atc-v7153-tossplace-admin.js?v=7.184"></script>
+<script src="/assets/js/atc-v7167-foodrain-admin.js?v=7.186"></script>
+
+<!-- v7.200: stock/order-unit, channel-fee, finished-product and collapsible sidebar patch. -->
+<link rel="stylesheet" href="/assets/css/atc-v7200-ops-rework.css?v=7.200">
+<script src="/assets/js/atc-v7200-ops-rework.js?v=7.200"></script>
+
+<!-- v7.210: 레시피 매칭·매출 재계산을 화면을 막지 않는 백그라운드 작업으로 처리. -->
+<script src="/assets/js/atc-v7210-background-jobs.js?v=7.210"></script>
+<!-- v7.220: scoped procurement packaging, purchase classification, and recipe category fixes. -->
+<script src="/assets/js/atc-v7220-procurement-category-fixes.js?v=7.220"></script>
+<!-- v7.230: fast data rendering, logo home navigation, and strict explicit-option integrity. -->
+<script src="/assets/js/atc-v7230-integrity-fixes.js?v=7.233"></script>
