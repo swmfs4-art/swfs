@@ -1,9 +1,10 @@
 {
   "name": "atc-fnb",
-  "version": "7.132.0",
+  "version": "7.248.0",
   "private": true,
   "scripts": {
-    "start": "node bootstrap.js"
+    "start": "node server.js",
+    "test": "node --test tests/*.test.js"
   },
   "engines": {
     "node": ">=18"
