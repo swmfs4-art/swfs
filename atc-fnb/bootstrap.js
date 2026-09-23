@@ -38,5 +38,5 @@ function restoreTar(prefix){
 restoreTar('app-');
 restore('frontend-','index.html');
 restore('server-','server.js');
-// Deploy v7.214 - 2026-09-21 remove fake sample gallery
+// Deploy v7.250.0 - canonical frontend, revisioned sync, recipe/data recovery
 require('./server.js');
