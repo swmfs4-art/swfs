@@ -38,5 +38,5 @@ function restoreTar(prefix){
 restoreTar('app-');
 restore('frontend-','index.html');
 restore('server-','server.js');
-// Deploy v7.260.0 - canonical frontend, revisioned sync, recipe/data recovery
+// Deploy v7.262.0 - production operations, lazy heavy assets, compressed cache-safe delivery
 require('./server.js');
