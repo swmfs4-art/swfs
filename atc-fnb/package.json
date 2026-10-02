@@ -1,6 +1,6 @@
 {
   "name": "atc-fnb",
-  "version": "7.299.18",
+  "version": "7.299.19",
   "private": true,
   "scripts": {
     "build": "node scripts/build-frontend.js",
